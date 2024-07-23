@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="white">#FFFFFFFF</color>
+    <color name="primary">#9FFF76</color>
+    <color name="darkTheme_bg">#242222</color>
+    <color name="dim_primary">#D584DE5D</color>
+    <color name="colorAccent">#ff563f</color>
+    <color name="colorAccentDarker">#9D493E</color>
+    <color name="primary_bg">#1C1C1C</color>
+    <color name="secondary_bg">#161616</color>
+    <color name="darkbg_main_a80">#131313</color>
+    <color name="secondary_bg_lighter">#7F7F7F</color>
+    <color name="better_white">#E3E1E1</color>
+
+</resources>
