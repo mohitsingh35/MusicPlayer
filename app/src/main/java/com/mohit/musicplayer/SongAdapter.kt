@@ -110,11 +110,15 @@ class SongAdapter(
     }
 
     fun updatePlayingSong(position: Int, isPlaying: Boolean) {
-        songs[position].isPlaying = isPlaying
-        songs[position].isPaused=isPlaying
+        for (i in songs.indices) {
+            songs[i].isPlaying = (i == position && isPlaying)
+            songs[i].isPaused = (i == position && isPlaying)
+
+        }
         currentlyPlayingPosition = if (isPlaying) position else null
         notifyDataSetChanged()
     }
+
 
     fun updateProgress(progress: Int, position: Int) {
         Log.d("SongAdapter", "Updating progress: $progress")

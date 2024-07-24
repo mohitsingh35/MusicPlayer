@@ -33,33 +33,6 @@ class MusicService : Service() {
         fun getService(): MusicService = this@MusicService
     }
 
-//    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-//        when (intent?.action) {
-//            ACTION_PLAY -> {
-//                val songPath = intent.getStringExtra("song_path")
-//                songName = intent.getStringExtra("song_title")!!
-//                songArtist = intent.getStringExtra("song_artist")!!
-//                currentlyPlayingPosition = intent.getIntExtra("song_position", -1)
-//
-//                if (songPath != null) {
-//                    playSong(songPath, songName, songArtist)
-//                }
-//            }
-//            ACTION_PAUSE -> {
-//                if (isPlaying) {
-//                    pauseSong()
-//                } else {
-//                    resumeSong()
-//                }
-//                updateNotificationControls()
-//            }
-//            ACTION_STOP -> {
-//                stopSong()
-//            }
-//        }
-//        return START_STICKY
-//    }
-
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         when (intent?.action) {
             ACTION_PLAY -> {
@@ -142,21 +115,6 @@ class MusicService : Service() {
     }
 
 
-//    private fun playSong(songPath: String, songTitle: String, songArtist: String) {
-//        mediaPlayer?.release()
-//        mediaPlayer = MediaPlayer().apply {
-//            setDataSource(songPath)
-//            prepare()
-//            start()
-//            setOnCompletionListener {
-//                onSongCompleted()
-//            }
-//        }
-//        isPlaying = true
-//        buildNotification(songTitle, songArtist)
-//        handler.post(updateProgressTask)
-//    }
-
     private fun playSong(songPath: String, songTitle: String, songArtist: String, startFrom: Int = 0) {
         mediaPlayer?.release()
         mediaPlayer = MediaPlayer().apply {
@@ -184,12 +142,6 @@ class MusicService : Service() {
         stopSelf()
         sendStateChangeBroadcast()
     }
-
-//    private fun pauseSong() {
-//        mediaPlayer?.pause()
-//        isPlaying = false
-//        sendStateChangeBroadcast()
-//    }
 
     private fun pauseSong() {
         mediaPlayer?.let {

@@ -104,6 +104,17 @@ object ExtensionsUtil {
         visibility = View.VISIBLE
     }
 
+    fun loadAlbumArtIntoImageView(context: Context, imageView: ImageView, albumArtPath: String?) {
+        if (albumArtPath != null) {
+            Glide.with(context)
+                .load(albumArtPath)
+                .apply(RequestOptions().placeholder(R.drawable.music_record).error(R.drawable.music_record))
+                .into(imageView)
+        } else {
+            imageView.setImageResource(R.drawable.music_record)
+        }
+    }
+
     // Toasts
 
     fun Fragment.toast(message: String) {

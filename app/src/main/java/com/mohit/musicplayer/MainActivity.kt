@@ -1,20 +1,13 @@
 package com.mohit.musicplayer
 
-import android.Manifest
-import android.content.*
-import android.content.pm.PackageManager
 import android.os.Bundle
-import android.os.IBinder
 import android.util.Log
-import android.widget.ImageView
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
-import com.bumptech.glide.request.RequestOptions
+import com.mohit.musicplayer.ExtensionsUtil.loadAlbumArtIntoImageView
 import com.mohit.musicplayer.ExtensionsUtil.rotateInfinity
 import com.mohit.musicplayer.ExtensionsUtil.setOnClickThrottleBounceListener
 import com.mohit.musicplayer.ExtensionsUtil.visible
@@ -22,41 +15,36 @@ import com.mohit.musicplayer.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var songList: List<Song>
-    private lateinit var musicService: MusicService
-    private lateinit var recyclerView:RecyclerView
-    private var isBound = false
-    val binding: ActivityMainBinding by lazy {
+    private lateinit var recyclerView: RecyclerView
+    private lateinit var songAdapter: SongAdapter
+    private val binding: ActivityMainBinding by lazy {
         ActivityMainBinding.inflate(layoutInflater)
     }
-    private lateinit var songAdapter: SongAdapter
+    private val viewModel: MainViewModel by viewModels()
 
-    companion object {
-        private const val REQUEST_CODE_READ_EXTERNAL_STORAGE = 1
-    }
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(binding.root)
+        PrefManager.initialize(this)
 
-    private val progressReceiver = object : BroadcastReceiver() {
-        override fun onReceive(context: Context?, intent: Intent?) {
-            val progress = intent?.getIntExtra("progress", 0) ?: 0
-            val position = intent?.getIntExtra("songPosition", 0) ?: 0
+        viewModel.songList.observe(this, Observer { songs ->
+            songs?.let {
+                setupRecyclerView(it)
+                restoreSongDetails()
+                if (savedInstanceState == null) {
+                    setSongFromCache()
+                }
 
+            }
+        })
+
+        viewModel.progress.observe(this, Observer { (progress, position) ->
             Log.d("MainActivity", "Received progress: $progress at position $position")
             songAdapter.updateProgress(progress, position)
             updateSongProgress(progress)
-        }
-    }
+        })
 
-    private val songCompletionReceiver = object : BroadcastReceiver() {
-        override fun onReceive(context: Context?, intent: Intent?) {
-            Log.d("MainActivity", "Song completed")
-            handleNextSong()
-        }
-    }
-
-    private val stateChangeReceiver = object : BroadcastReceiver() {
-        override fun onReceive(context: Context?, intent: Intent?) {
-            val isPlaying = intent?.getBooleanExtra("isPlaying", false) ?: false
-            val songPosition = intent?.getIntExtra("songPosition", -1) ?: -1
+        viewModel.isPlaying.observe(this, Observer { (isPlaying, songPosition) ->
             Log.d("MainActivity", isPlaying.toString())
             Log.d("MainActivity", songPosition.toString())
 
@@ -65,107 +53,47 @@ class MainActivity : AppCompatActivity() {
             }
 
             binding.icPlayPause.setImageResource(if (isPlaying) R.drawable.ic_pause else R.drawable.ic_play_arrow)
+            binding.songPreview.visible()
+        })
 
+        viewModel.songCompleted.observe(this, Observer {
+            handleNextSong()
+        })
+
+        viewModel.updatePalyingSong.observe(this, Observer { (songPosition, isPlaying,) ->
+            songAdapter.updatePlayingSong(songPosition, isPlaying)
+            val song=viewModel.songList.value?.get(songPosition) ?: return@Observer
+            setSongPreview(song)
+            viewModel.startPlayingSong(song)
+        })
+
+        viewModel.requestPermission(this)
+    }
+
+    private fun setupRecyclerView(songs: List<Song>) {
+        recyclerView = findViewById(R.id.recyclerView)
+        recyclerView.layoutManager = LinearLayoutManager(this)
+        songAdapter = SongAdapter(songs, this) { song ->
+            Log.d("clicked", song.toString())
+            viewModel.handleSongClick(song)
         }
+        recyclerView.adapter = songAdapter
     }
 
     private fun handleNextSong() {
-        val currentPosition = songList.indexOfFirst { it.isPlaying }
+        val currentPosition = viewModel.songList.value?.indexOfFirst { it.isPlaying } ?: return
         if (currentPosition != -1) {
             songAdapter.updatePlayingSong(currentPosition, false)
-
-            val nextPosition = (currentPosition + 1) % songList.size
+            val nextPosition = (currentPosition + 1) % (viewModel.songList.value?.size ?: 1)
             songAdapter.updatePlayingSong(nextPosition, true)
-
-            startPlayingSong(songList[nextPosition])
+            val song=viewModel.songList.value?.get(nextPosition) ?: return
+            viewModel.startPlayingSong(song)
+            setSongPreview(song)
         }
     }
 
-
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(binding.root)
-        PrefManager.initialize(this)
-        if (ContextCompat.checkSelfPermission(
-                this,
-                Manifest.permission.READ_EXTERNAL_STORAGE
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            ActivityCompat.requestPermissions(
-                this,
-                arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
-                REQUEST_CODE_READ_EXTERNAL_STORAGE
-            )
-        } else {
-            initializePlayer()
-        }
-
-        LocalBroadcastManager.getInstance(this)
-            .registerReceiver(progressReceiver, IntentFilter("PROGRESS_UPDATE"))
-        LocalBroadcastManager.getInstance(this)
-            .registerReceiver(songCompletionReceiver, IntentFilter("SONG_COMPLETED"))
-        LocalBroadcastManager.getInstance(this).registerReceiver(stateChangeReceiver, IntentFilter("STATE_CHANGE"))
-        setSongFromCache()
-    }
-
-    private fun initializePlayer() {
-        songList = getAllAudioFromDevice(contentResolver)
-
-        Log.d("songList", songList.toString())
-
-        recyclerView = findViewById<RecyclerView>(R.id.recyclerView)
-        recyclerView.layoutManager = LinearLayoutManager(this)
-        songAdapter=SongAdapter(songList,this) { song ->
-            Log.d("clicked", song.toString())
-            handleSongClick(song)
-        }
-        recyclerView.adapter = songAdapter
-
-        val intent = Intent(this, MusicService::class.java)
-        bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE)
-    }
-
-    private fun handleSongClick(song: Song) {
-        val previousPlayingPosition = songList.indexOfFirst { it.isPlaying }
-        if (previousPlayingPosition != -1) {
-            songAdapter.updatePlayingSong(previousPlayingPosition, false)
-        }
-
-        val newPlayingPosition = songList.indexOf(song)
-        songAdapter.updatePlayingSong(newPlayingPosition, true)
-        startPlayingSong(song)
-    }
-
-//    private fun startPlayingSong(song: Song) {
-//        val intent = Intent(this, MusicService::class.java).apply {
-//            action = MusicService.ACTION_PLAY
-//            putExtra("song_path", song.data)
-//            putExtra("song_title", song.title)
-//            putExtra("song_artist", song.artist)
-//            putExtra("song_position", songList.indexOf(song))
-//        }
-//        startService(intent)
-//        setSongPreview(song)
-//        PrefManager.setLastPlayedSong(song.data)
-//    }
-
-    private fun startPlayingSong(song: Song, startFrom: Int = 0) {
-        val intent = Intent(this, MusicService::class.java).apply {
-            action = MusicService.ACTION_PLAY
-            putExtra("song_path", song.data)
-            putExtra("song_title", song.title)
-            putExtra("song_artist", song.artist)
-            putExtra("song_position", songList.indexOf(song))
-            putExtra("start_from", startFrom)
-        }
-        startService(intent)
-        setSongPreview(song)
-        PrefManager.setLastPlayedSong(song.data)
-        PrefManager.setLastPlayedSongDuration(startFrom)
-    }
-
-    private fun setSongFromCache(){
+    private fun setSongFromCache() {
+        val songList = viewModel.songList.value ?: return
         if (PrefManager.getLastPlayedSong().isNotEmpty()) {
             val lastPlayedSongData = PrefManager.getLastPlayedSong()
             val songIndex = songList.indexOfFirst { it.data == lastPlayedSongData }
@@ -174,27 +102,33 @@ class MainActivity : AppCompatActivity() {
                 val song = songList[songIndex]
                 val lastPlayedDuration = PrefManager.getLastPlayedSongDuration()
                 song.isPlaying = true
-                song.isPaused = false
+                song.isPaused=false
                 setSongPreview(song)
-                startPlayingSong(song, lastPlayedDuration)
-                pausePlayingSong(song)
+                viewModel.startPlayingSong(song, lastPlayedDuration)
+                viewModel.pausePlayingSong(song)
                 songAdapter.updatePlayPauseState(songIndex,true)
             }
         }
     }
 
-    private fun pausePlayingSong(song: Song){
-        val intent = Intent(this, MusicService::class.java).apply {
-            action = if (song.isPlaying) MusicService.ACTION_PAUSE else MusicService.ACTION_PLAY
-            putExtra("song_path", song.data)
-            putExtra("song_title", song.title)
-            putExtra("song_artist", song.artist)
-            putExtra("song_position", songList.indexOf(song))
+    private fun restoreSongDetails() {
+        val songList = viewModel.songList.value ?: return
+        if (PrefManager.getLastPlayedSong().isNotEmpty()) {
+            val lastPlayedSongData = PrefManager.getLastPlayedSong()
+            val songIndex = songList.indexOfFirst { it.data == lastPlayedSongData }
+
+            if (songIndex != -1) {
+                val song = songList[songIndex]
+                song.isPlaying = true
+                song.isPaused=false
+                setSongPreview(song)
+            }
         }
-        startService(intent)
     }
 
-
+    private fun updateSongProgress(progress: Int) {
+        binding.progressHorizontal.progress = progress
+    }
 
     private fun setSongPreview(song: Song){
         if (PrefManager.getFavoriteSong().contains(song.data)){
@@ -208,15 +142,14 @@ class MainActivity : AppCompatActivity() {
         binding.songTitle.text = song.title
         binding.songArtist.text = song.artist
 
+        if (song.isPlaying){
+            binding.icPlayPause.setImageResource(R.drawable.ic_pause)
+        }else{
+            binding.icPlayPause.setImageResource(R.drawable.ic_play_arrow)
+        }
+
         binding.icPlayPause.setOnClickThrottleBounceListener{
-            val intent = Intent(this, MusicService::class.java).apply {
-                action = if (song.isPlaying) MusicService.ACTION_PAUSE else MusicService.ACTION_PLAY
-                putExtra("song_path", song.data)
-                putExtra("song_title", song.title)
-                putExtra("song_artist", song.artist)
-                putExtra("song_position", songList.indexOf(song))
-            }
-            startService(intent)
+            viewModel.pausePlayingSong(song)
         }
         binding.favs.setOnClickThrottleBounceListener {
             if (PrefManager.isFavoriteSong(song.data)){
@@ -229,53 +162,11 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
-
-    private fun updateSongProgress(progress: Int){
-        binding.progressHorizontal.progress = progress
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
     }
 
-    private fun loadAlbumArtIntoImageView(context: Context, imageView: ImageView, albumArtPath: String?) {
-        if (albumArtPath != null) {
-            Glide.with(context)
-                .load(albumArtPath)
-                .apply(RequestOptions().placeholder(R.drawable.music_record).error(R.drawable.music_record))
-                .into(imageView)
-        } else {
-            imageView.setImageResource(R.drawable.music_record)
-        }
-    }
-
-    private val serviceConnection = object : ServiceConnection {
-        override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
-            val binder = service as MusicService.MusicBinder
-            musicService = binder.getService()
-            isBound = true
-        }
-
-        override fun onServiceDisconnected(name: ComponentName?) {
-            isBound = false
-        }
-    }
-
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == REQUEST_CODE_READ_EXTERNAL_STORAGE) {
-            if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
-                initializePlayer()
-            } else {
-
-            }
-        }
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        if (isBound) {
-            unbindService(serviceConnection)
-        }
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(progressReceiver)
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(songCompletionReceiver)
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(stateChangeReceiver)
-
+    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+        super.onRestoreInstanceState(savedInstanceState)
     }
 }
