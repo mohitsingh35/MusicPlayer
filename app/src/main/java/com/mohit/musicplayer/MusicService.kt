@@ -61,6 +61,10 @@ class MusicService : Service() {
             ACTION_STOP -> {
                 stopSong()
             }
+            ACTION_SEEK -> {
+                val seekPosition = intent.getIntExtra("seek_position", 0)
+                seekTo(seekPosition)
+            }
         }
         return START_STICKY
     }
@@ -96,6 +100,17 @@ class MusicService : Service() {
         LocalBroadcastManager.getInstance(this).sendBroadcast(progressUpdateIntent)
     }
 
+    private fun broadcastTimestamp() {
+        mediaPlayer?.let {
+            val currentTimestamp = it.currentPosition
+            val timestampIntent = Intent("TIMESTAMP_UPDATE").apply {
+                putExtra("timestamp", currentTimestamp)
+            }
+            LocalBroadcastManager.getInstance(this).sendBroadcast(timestampIntent)
+        }
+    }
+
+
     private val updateProgressTask = object : Runnable {
         override fun run() {
             mediaPlayer?.let {
@@ -103,6 +118,7 @@ class MusicService : Service() {
                 Log.d("MusicService", "Current progress: $progress")
                 broadcastProgress(progress)
                 updateNotificationProgress(progress)
+                broadcastTimestamp()
                 handler.postDelayed(this, 1000)
             }
         }
@@ -131,6 +147,10 @@ class MusicService : Service() {
         handler.post(updateProgressTask)
     }
 
+    private fun seekTo(position: Int) {
+        mediaPlayer?.seekTo(position)
+        sendStateChangeBroadcast()
+    }
 
 
     private fun stopSong() {
@@ -141,13 +161,15 @@ class MusicService : Service() {
         stopForeground(true)
         stopSelf()
         sendStateChangeBroadcast()
+        PrefManager.setLastPlayedSongDuration(mediaPlayer!!.currentPosition)
+
     }
 
     private fun pauseSong() {
         mediaPlayer?.let {
             it.pause()
             isPlaying = false
-            PrefManager.setLastPlayedSongDuration(it.currentPosition) // Save the current position
+            PrefManager.setLastPlayedSongDuration(it.currentPosition)
             sendStateChangeBroadcast()
         }
     }
@@ -214,6 +236,7 @@ class MusicService : Service() {
         const val ACTION_PAUSE = "ACTION_PAUSE"
         const val ACTION_STOP = "ACTION_STOP"
         const val CHANNEL_ID = "Music_Player_Channel"
+        const val ACTION_SEEK = "ACTION_SEEK"
         const val NOTIFICATION_ID = 1
 
     }

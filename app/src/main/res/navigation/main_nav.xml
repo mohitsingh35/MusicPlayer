@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/org_flow_nav"
+    app:startDestination="@id/device_songs">
+
+    <fragment
+        android:id="@+id/device_songs"
+        android:name="com.mohit.musicplayer.DeviceSongsFragment"
+        android:label="DeviceSongsFragment"
+        tools:layout="@layout/fragment_device_songs" >
+        <action
+            android:id="@+id/flow_device_songs_to_music_payer"
+            app:enterAnim="@anim/faster_slide_bottom_to_up"
+            app:destination="@id/music_player"/>
+    </fragment>
+
+    <fragment
+        android:id="@+id/music_player"
+        android:name="com.mohit.musicplayer.MusicPlayerFragment"
+        android:label="MusicPlayerFragment"
+        tools:layout="@layout/fragment_music_player" >
+
+        <action
+            android:id="@+id/flow_music_payer_to_device_songs"
+            app:destination="@id/device_songs"/>
+
+    </fragment>
+
+
+
+
+</navigation>

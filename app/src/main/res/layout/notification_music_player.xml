@@ -23,6 +23,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Title"
+                android:textColor="@color/colorAccent"
+                android:fontFamily="@font/sans_medium"
                 android:maxLines="1"
                 android:ellipsize="end"
                 android:textSize="14sp"
@@ -34,6 +36,8 @@
                 android:layout_height="wrap_content"
                 android:text="Artist"
                 android:maxLines="1"
+                android:textColor="@color/colorAccent"
+                android:fontFamily="@font/sans_medium"
                 android:ellipsize="end"
                 android:textSize="12sp" />
         </LinearLayout>
@@ -44,15 +48,16 @@
             android:layout_gravity="center"
             android:layout_height="30dp"
             android:src="@drawable/baseline_stop_24"
-            app:tint="@color/white" />
+            app:tint="@color/colorAccent" />
 
         <ImageView
             android:id="@+id/notification_play_pause"
             android:layout_width="30dp"
             android:layout_gravity="center"
             android:layout_height="30dp"
+            app:tint="@color/colorAccent"
             android:src="@drawable/ic_play_arrow"
-            app:tint="@color/white" />
+            />
     </LinearLayout>
 
 
@@ -64,6 +69,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:max="100"
+        android:progressTint="@color/colorAccent"
         android:layout_marginTop="10dp"
         android:progress="50" />
 

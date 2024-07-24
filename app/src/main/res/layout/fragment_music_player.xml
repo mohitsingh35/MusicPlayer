@@ -1,0 +1,262 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:padding="10dp"
+    android:layout_height="match_parent"
+    android:background="@color/primary_bg"
+    tools:context=".MusicPlayerFragment">
+
+
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:padding="15dp"
+        android:weightSum="10"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:layout_width="25dp"
+            android:id="@+id/btnBack"
+            android:layout_height="25dp"
+            android:rotation="270"
+            android:src="@drawable/baseline_arrow_back_ios_new_24"
+            app:tint="@color/better_white" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="10"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="PLAYING FROM YOUR LIBRARY"
+                android:textColor="@color/better_white"
+                android:fontFamily="@font/sans_medium"
+                android:textSize="11dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="..."
+                android:id="@+id/libraryName"
+                android:fontFamily="@font/sans_bold"
+                android:textColor="@color/better_white"
+                android:textSize="12dp" />
+
+        </LinearLayout>
+
+        <ImageView
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:id="@+id/btnMore"
+            android:src="@drawable/baseline_more_vert_24"
+            app:tint="@color/better_white" />
+
+    </LinearLayout>
+
+
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/animationView"
+        android:layout_width="match_parent"
+        android:tint="@color/colorAccent"
+        android:visibility="visible"
+        android:layout_marginTop="100dp"
+        android:layout_height="350dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:lottie_autoPlay="true"
+        app:lottie_loop="true"
+        app:lottie_rawRes="@raw/music_anim" />
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="350dp"
+        android:id="@+id/music_record"
+        android:layout_marginTop="100dp"
+        android:scaleX="0.6"
+        android:scaleY="0.6"
+        android:src="@drawable/music_record_big"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginBottom="25dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:padding="15dp"
+            android:weightSum="10">
+
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="10"
+                android:gravity="start"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:id="@+id/songName"
+                    android:text="..."
+                    android:textColor="@color/better_white"
+                    android:fontFamily="@font/sans_extrabold"
+                    android:textSize="16dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:text="..."
+                    android:id="@+id/artistName"
+                    android:fontFamily="@font/sans_semibold"
+                    android:textColor="@color/better_white"
+                    android:textSize="14dp" />
+
+            </LinearLayout>
+
+            <ImageView
+                android:layout_width="25dp"
+                android:id="@+id/favs"
+                android:layout_height="25dp"
+                android:src="@drawable/baseline_favorite_border_24"
+                app:tint="@color/better_white" />
+
+        </LinearLayout>
+
+        <SeekBar
+            android:id="@+id/seekBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:progress="0"
+            android:progressTint="@color/colorAccent"
+            android:thumb="@drawable/baseline_circle_24" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="10">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="15dp"
+                android:layout_weight="10"
+                android:id="@+id/startTime"
+                android:fontFamily="@font/sans_light"
+                android:text="0:00"
+                android:textColor="@color/secondary_bg_lighter"
+                android:textSize="12dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="15dp"
+                android:text="0:00"
+                android:id="@+id/endTime"
+                android:fontFamily="@font/sans_light"
+                android:textColor="@color/secondary_bg_lighter"
+                android:textSize="12dp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="25dp"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:paddingStart="15dp"
+            android:paddingEnd="15dp"
+            android:weightSum="10">
+
+            <ImageView
+                android:layout_width="0dp"
+                android:layout_height="45dp"
+                android:layout_weight="2"
+                android:scaleX="0.6"
+                android:id="@+id/shuffle"
+                android:scaleY="0.6"
+                android:src="@drawable/baseline_shuffle_24"
+                app:tint="@color/better_white" />
+
+            <ImageView
+                android:layout_width="0dp"
+                android:layout_height="45dp"
+                android:id="@+id/prev"
+                android:layout_weight="3"
+                android:src="@drawable/ic_prev"
+                app:tint="@color/better_white" />
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:id="@+id/play_pause"
+                app:cardBackgroundColor="@color/better_white"
+                app:cardCornerRadius="80dp">
+
+                <ImageView
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:layout_margin="15dp"
+                    android:id="@+id/play_pause_btn"
+                    android:src="@drawable/ic_pause"
+                    app:tint="@color/darkTheme_bg" />
+
+            </androidx.cardview.widget.CardView>
+
+
+            <ImageView
+                android:layout_width="0dp"
+                android:layout_height="45dp"
+                android:id="@+id/ic_next"
+                android:layout_weight="3"
+                android:src="@drawable/ic_next"
+                app:tint="@color/better_white" />
+
+            <ImageView
+                android:layout_width="0dp"
+                android:layout_height="45dp"
+                android:layout_weight="2"
+                android:id="@+id/repeat"
+                android:scaleX="0.6"
+                android:scaleY="0.6"
+                android:src="@drawable/baseline_repeat_24"
+                app:tint="@color/better_white" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

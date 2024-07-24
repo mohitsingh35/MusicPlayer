@@ -115,6 +115,13 @@ object ExtensionsUtil {
         }
     }
 
+    fun formatTime(milliseconds: Int): String {
+        val minutes = (milliseconds / 1000) / 60
+        val seconds = (milliseconds / 1000) % 60
+        return String.format("%d:%02d", minutes, seconds)
+    }
+
+
     // Toasts
 
     fun Fragment.toast(message: String) {

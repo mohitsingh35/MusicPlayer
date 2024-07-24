@@ -72,5 +72,23 @@ object PrefManager {
         return sharedPreferences.getInt("lastPlayedSongDuration",-1)
     }
 
+    fun setShouldRestore(shouldRestore: Boolean){
+        editor.putBoolean("shouldRestore", shouldRestore)
+        editor.apply()
+    }
+
+    fun getShouldRestore(): Boolean {
+        return sharedPreferences.getBoolean("shouldRestore",false)
+    }
+
+    fun setWasClicked(wasClicked: Boolean){
+        editor.putBoolean("wasClicked", wasClicked)
+        editor.apply()
+    }
+
+    fun getWasClicked(): Boolean {
+        return sharedPreferences.getBoolean("wasClicked",false)
+    }
+
 
 }
