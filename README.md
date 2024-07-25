@@ -4,6 +4,12 @@ Music Player is an Android application to stream music from a device, it is a ve
 first and foremost priority, I have used MVVM architecture, which separates business logic from ui due to which I am effectively able to handle the music state and effortlessly communicate
 between different fragments.
 
+Download the test APK from here 👇
+
+<a href="https://github.com/mohitsingh35/MusicPlayer/releases/download/1.0/music_player.apk">
+<img src="https://www.pngall.com/wp-content/uploads/2/Download-Button-PNG-High-Quality-Image.png" width="250" /> 
+</a>
+
 # Features 
 
 1. Load .mp3 from device.
