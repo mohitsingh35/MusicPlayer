@@ -1,4 +1,4 @@
-package com.mohit.musicplayer
+package com.mohit.musicplayer.ui.MainActivity
 
 import android.os.Bundle
 import android.util.Log
@@ -6,19 +6,22 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.widget.NestedScrollView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.mohit.musicplayer.ExtensionsUtil.formatTime
-import com.mohit.musicplayer.ExtensionsUtil.gone
-import com.mohit.musicplayer.ExtensionsUtil.loadAlbumArtIntoImageView
-import com.mohit.musicplayer.ExtensionsUtil.rotateInfinity
-import com.mohit.musicplayer.ExtensionsUtil.setOnClickThrottleBounceListener
-import com.mohit.musicplayer.ExtensionsUtil.visible
+import com.mohit.musicplayer.utils.PrefManager
+import com.mohit.musicplayer.R
+import com.mohit.musicplayer.models.Song
+import com.mohit.musicplayer.utils.ExtensionsUtil.gone
+import com.mohit.musicplayer.utils.ExtensionsUtil.loadAlbumArtIntoImageView
+import com.mohit.musicplayer.utils.ExtensionsUtil.rotateInfinity
+import com.mohit.musicplayer.utils.ExtensionsUtil.setOnClickThrottleBounceListener
+import com.mohit.musicplayer.utils.ExtensionsUtil.visible
 import com.mohit.musicplayer.databinding.FragmentDeviceSongsBinding
+import com.mohit.musicplayer.ui.uicomponents.viewmodels.MainViewModel
+import com.mohit.musicplayer.ui.uicomponents.adapters.SongAdapter
 
 
 class DeviceSongsFragment : Fragment() {

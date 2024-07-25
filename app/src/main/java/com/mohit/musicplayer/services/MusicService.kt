@@ -1,4 +1,4 @@
-package com.mohit.musicplayer
+package com.mohit.musicplayer.services
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -15,6 +15,8 @@ import android.util.Log
 import android.widget.RemoteViews
 import androidx.core.app.NotificationCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import com.mohit.musicplayer.utils.PrefManager
+import com.mohit.musicplayer.R
 
 class MusicService : Service() {
 

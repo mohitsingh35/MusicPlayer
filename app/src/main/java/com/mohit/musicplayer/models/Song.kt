@@ -1,4 +1,4 @@
-package com.mohit.musicplayer
+package com.mohit.musicplayer.models
 
 import android.content.ContentResolver
 import android.content.ContentUris

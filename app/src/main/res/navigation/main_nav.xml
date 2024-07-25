@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/device_songs"
-        android:name="com.mohit.musicplayer.DeviceSongsFragment"
+        android:name="com.mohit.musicplayer.ui.MainActivity.DeviceSongsFragment"
         android:label="DeviceSongsFragment"
         tools:layout="@layout/fragment_device_songs" >
         <action
@@ -18,7 +18,7 @@
 
     <fragment
         android:id="@+id/music_player"
-        android:name="com.mohit.musicplayer.MusicPlayerFragment"
+        android:name="com.mohit.musicplayer.ui.MainActivity.MusicPlayerFragment"
         android:label="MusicPlayerFragment"
         tools:layout="@layout/fragment_music_player" >
 

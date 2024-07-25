@@ -6,7 +6,7 @@
     android:orientation="vertical"
     android:weightSum="10"
     android:layout_height="match_parent"
-    tools:context=".DeviceSongsFragment"
+    tools:context=".ui.MainActivity.DeviceSongsFragment"
     android:background="@color/primary_bg">
 
     <LinearLayout

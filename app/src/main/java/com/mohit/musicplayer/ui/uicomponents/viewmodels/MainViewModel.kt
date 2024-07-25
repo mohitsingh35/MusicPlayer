@@ -1,4 +1,4 @@
-package com.mohit.musicplayer
+package com.mohit.musicplayer.ui.uicomponents.viewmodels
 
 import android.app.Activity
 import androidx.core.app.ActivityCompat
@@ -11,6 +11,10 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import com.mohit.musicplayer.models.Song
+import com.mohit.musicplayer.models.getAllAudioFromDevice
+import com.mohit.musicplayer.services.MusicService
+import com.mohit.musicplayer.utils.PrefManager
 
 class MainViewModel(application: Application) : AndroidViewModel(application) {
 

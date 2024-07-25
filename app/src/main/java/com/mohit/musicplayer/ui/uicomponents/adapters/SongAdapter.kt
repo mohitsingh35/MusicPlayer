@@ -1,4 +1,4 @@
-package com.mohit.musicplayer
+package com.mohit.musicplayer.ui.uicomponents.adapters
 
 import android.content.Context
 import android.content.Intent
@@ -10,10 +10,14 @@ import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
-import com.mohit.musicplayer.ExtensionsUtil.gone
-import com.mohit.musicplayer.ExtensionsUtil.setOnClickThrottleBounceListener
-import com.mohit.musicplayer.ExtensionsUtil.visible
+import com.mohit.musicplayer.R
+import com.mohit.musicplayer.utils.ExtensionsUtil.gone
+import com.mohit.musicplayer.utils.ExtensionsUtil.setOnClickThrottleBounceListener
+import com.mohit.musicplayer.utils.ExtensionsUtil.visible
 import com.mohit.musicplayer.databinding.ItemSongBinding
+import com.mohit.musicplayer.models.Song
+import com.mohit.musicplayer.services.MusicService
+import com.mohit.musicplayer.utils.PrefManager
 
 class SongAdapter(
     private val songs: List<Song>,

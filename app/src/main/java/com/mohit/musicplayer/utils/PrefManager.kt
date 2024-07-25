@@ -1,4 +1,4 @@
-package com.mohit.musicplayer
+package com.mohit.musicplayer.utils
 
 import android.content.Context
 import android.content.SharedPreferences

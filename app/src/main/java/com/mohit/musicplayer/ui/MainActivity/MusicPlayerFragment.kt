@@ -1,8 +1,7 @@
-package com.mohit.musicplayer
+package com.mohit.musicplayer.ui.MainActivity
 
 import android.media.MediaPlayer
 import android.os.Bundle
-import android.os.Handler
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -12,11 +11,14 @@ import android.widget.SeekBar
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
-import com.mohit.musicplayer.ExtensionsUtil.formatTime
-import com.mohit.musicplayer.ExtensionsUtil.rotateInfinity
-import com.mohit.musicplayer.ExtensionsUtil.setOnClickThrottleBounceListener
-import com.mohit.musicplayer.ExtensionsUtil.visible
+import com.mohit.musicplayer.utils.PrefManager
+import com.mohit.musicplayer.R
+import com.mohit.musicplayer.models.Song
+import com.mohit.musicplayer.utils.ExtensionsUtil.formatTime
+import com.mohit.musicplayer.utils.ExtensionsUtil.rotateInfinity
+import com.mohit.musicplayer.utils.ExtensionsUtil.setOnClickThrottleBounceListener
 import com.mohit.musicplayer.databinding.FragmentMusicPlayerBinding
+import com.mohit.musicplayer.ui.uicomponents.viewmodels.MainViewModel
 
 
 class MusicPlayerFragment : Fragment() {
