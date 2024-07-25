@@ -8,10 +8,19 @@ between different fragments.
 
 1. Load .mp3 from device.
 2. Mark songs as favorites.
-3. Song progress in the notification panel with music playback controls.
-4. Background music playback support.
-5. Seek to a timestamp.
-6. Play / Pause and Previous / Next track.
+3. Resume songs from the last left timestamp.
+4. Song progress in the notification panel with music playback controls.
+5. Background music playback support.
+6. Seek to a timestamp.
+7. Play / Pause and Previous / Next track.
+8. State is preserved upon configuration changes.
 
+<br>
+<br>
 
+<p float="left" height="auto">
+  <img src="https://github.com/mohitsingh35/MusicPlayer/blob/main/Screenshot/first.png" width="250" />
+  <img src="https://github.com/mohitsingh35/MusicPlayer/blob/main/Screenshot/second.png" width="250" />
+  <img src="https://github.com/mohitsingh35/MusicPlayer/blob/main/Screenshot/third.png" width="250" />
+</p>
    
