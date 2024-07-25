@@ -6,12 +6,14 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.widget.NestedScrollView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.mohit.musicplayer.ExtensionsUtil.formatTime
+import com.mohit.musicplayer.ExtensionsUtil.gone
 import com.mohit.musicplayer.ExtensionsUtil.loadAlbumArtIntoImageView
 import com.mohit.musicplayer.ExtensionsUtil.rotateInfinity
 import com.mohit.musicplayer.ExtensionsUtil.setOnClickThrottleBounceListener
@@ -25,6 +27,7 @@ class DeviceSongsFragment : Fragment() {
     private lateinit var recyclerView: RecyclerView
     private lateinit var songAdapter: SongAdapter
     private lateinit var viewModel: MainViewModel
+    val state = arrayOf(1)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,6 +59,9 @@ class DeviceSongsFragment : Fragment() {
 
     private fun setUpViews() {
 
+        binding.loadSongs.setOnClickThrottleBounceListener {
+            requireActivity().recreate()
+        }
         binding.songPreview.setOnClickThrottleBounceListener {
             val currentPosition = viewModel.songList.value?.indexOfFirst { it.isPlaying } ?: return@setOnClickThrottleBounceListener
             val song=viewModel.songList.value?.get(currentPosition) ?: return@setOnClickThrottleBounceListener
@@ -67,6 +73,12 @@ class DeviceSongsFragment : Fragment() {
 
         viewModel.songList.observe(viewLifecycleOwner, Observer { songs ->
             songs?.let {
+                if (songs.isEmpty()){
+                    binding.loadSongs.gone()
+                    binding.scrollView.gone()
+                    binding.placeholderText.visible()
+                    return@Observer
+                }
                 setupRecyclerView(it)
                 restoreSongDetails()
             }
@@ -109,6 +121,9 @@ class DeviceSongsFragment : Fragment() {
         viewModel.requestPermission(requireContext())
     }
     private fun setupRecyclerView(songs: List<Song>) {
+        binding.scrollView.visible()
+        binding.placeholderText.gone()
+        binding.loadSongs.gone()
         recyclerView = binding.recyclerView
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
         songAdapter = SongAdapter(songs, requireContext()) { song ->
@@ -118,6 +133,8 @@ class DeviceSongsFragment : Fragment() {
         }
         recyclerView.adapter = songAdapter
     }
+
+
 
     private fun handleNextSong() {
         val currentPosition = viewModel.songList.value?.indexOfFirst { it.isPlaying } ?: return

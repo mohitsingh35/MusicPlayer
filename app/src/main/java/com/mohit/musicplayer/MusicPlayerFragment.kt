@@ -145,7 +145,6 @@ class MusicPlayerFragment : Fragment() {
         Log.d("handleNextSong", "called")
         val currentPosition = viewModel.songList.value?.indexOfFirst { it.isPlaying } ?: return
         if (currentPosition != -1) {
-//            viewModel.updatePlayingSong(currentPosition,false)
             val nextPosition = (currentPosition + 1) % (viewModel.songList.value?.size ?: 1)
             val song=viewModel.songList.value?.get(nextPosition) ?: return
             viewModel.startPlayingSong(song)
